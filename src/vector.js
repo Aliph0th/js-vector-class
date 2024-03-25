@@ -22,4 +22,26 @@ export class Vector3D {
          throw new Error('Coordinates are incorrect');
       }
    }
+
+   copy = () => {
+      return new Vector3D(...this.#coords);
+   };
+
+   add = vector => {
+      this.#coords = this.#coords.map((c, index) => c + vector.coords[index]);
+      return this;
+   };
+   subtract = vector => {
+      this.#coords = this.#coords.map((c, index) => c - vector.coords[index]);
+      return this;
+   };
+
+   times = alpha => {
+      this.#coords = this.#coords.map(c => c * alpha);
+      return this;
+   };
+
+   isEqualTo = vector => {
+      return this.#coords.every((coord, index) => coord === vector.coords[index]);
+   };
 }
