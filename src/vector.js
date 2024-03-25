@@ -1,4 +1,4 @@
-import { areNotSpecified, areNumbers } from './helpers.js';
+import { areNotSpecified, areNumbers, areVectors } from './helpers.js';
 
 export class Vector3D {
    #coords;
@@ -23,25 +23,49 @@ export class Vector3D {
       }
    }
 
+   get length() {
+      return Math.sqrt(this.#coords.reduce((accum, c) => accum + c * c, 0));
+   }
+   set length(_) {
+      throw new Error('Cannot assign length property');
+   }
+
    copy = () => {
       return new Vector3D(...this.#coords);
    };
 
    add = vector => {
+      if (!areVectors(vector)) {
+         throw new Error('Argument must be a Vector3D instance');
+      }
       this.#coords = this.#coords.map((c, index) => c + vector.coords[index]);
       return this;
    };
    subtract = vector => {
+      if (!areVectors(vector)) {
+         throw new Error('Argument must be a Vector3D instance');
+      }
       this.#coords = this.#coords.map((c, index) => c - vector.coords[index]);
       return this;
    };
 
    times = alpha => {
+      if (!areNumbers(alpha)) {
+         throw new Error('Argument must be a number');
+      }
       this.#coords = this.#coords.map(c => c * alpha);
       return this;
    };
 
-   isEqualTo = vector => {
+   isEqual = vector => {
+      if (!areVectors(vector)) {
+         throw new Error('Argument must be a Vector3D instance');
+      }
       return this.#coords.every((coord, index) => coord === vector.coords[index]);
+   };
+
+   normalize = () => {
+      this.#coords = this.#coords.map(c => c / this.length);
+      return this;
    };
 }
