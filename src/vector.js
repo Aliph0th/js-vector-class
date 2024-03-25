@@ -6,6 +6,18 @@ export class Vector3D {
       this.coords = [x, y, z];
    }
 
+   static fromTwoPoints(point1, point2) {
+      if (
+         !Array.isArray(point1) ||
+         !Array.isArray(point2) ||
+         !areNumbers(...point1, ...point2)
+      ) {
+         throw new Error('Points must be arrays of numbers');
+      }
+      const coords = point2.map((c, index) => c - point1[index]);
+      return new Vector3D(...coords);
+   }
+
    get coords() {
       return [...this.#coords];
    }
@@ -67,5 +79,12 @@ export class Vector3D {
    normalize = () => {
       this.#coords = this.#coords.map(c => c / this.length);
       return this;
+   };
+
+   scalarMultiplyBy = vector => {
+      if (!areVectors(vector)) {
+         throw new Error('Argument must be a Vector3D instance');
+      }
+      return this.#coords.reduce((accum, c, index) => accum + c * vector.coords[index]);
    };
 }
