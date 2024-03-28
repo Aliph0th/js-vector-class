@@ -21,11 +21,17 @@ console.log(e.coords); // [3, 1, 0]
 e.coords = [6, 723, 1];
 console.log(e.coords); // [6, 723, 1]
 
+console.log(a.toString()); // vector(1, 2, 3)
+
+console.log(e.set(b).coords); // [-3, -3, -3]
+
+console.log(a.setComponents({ y: 999 }).coords); // [1, 999, 3]
+
 // Errors
 /*
 new Vector3D();
 new Vector3D(2, 4);
-new Vector3D('3', '2', '1');
+new Vector3D('3', '2', 1);
 a.add(5);
 a.times([4]);
 a.length = 2;

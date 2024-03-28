@@ -1,7 +1,5 @@
-import { areNotSpecified, areNumbers, areVectors } from './helpers.js';
-
 export class Vector3D {
-   #coords;
+   #coords = [];
    constructor(x, y, z) {
       this.coords = [x, y, z];
    }
@@ -10,7 +8,7 @@ export class Vector3D {
       if (
          !Array.isArray(point1) ||
          !Array.isArray(point2) ||
-         !areNumbers(...point1, ...point2)
+         [...point1, ...point2].some(x => typeof x !== 'number')
       ) {
          throw new Error('Points must be arrays of numbers');
       }
@@ -26,9 +24,9 @@ export class Vector3D {
          throw new Error('Assigned value must be an array');
       }
       const [x, y, z] = coords;
-      if (areNumbers(x) && areNotSpecified(y, z)) {
+      if (this.#areNumbers(x) && !this.#someSpecified(y, z)) {
          this.#coords = [x, x, x];
-      } else if (areNumbers(x, y, z)) {
+      } else if (this.#areNumbers(x, y, z)) {
          this.#coords = [x, y, z];
       } else {
          throw new Error('Coordinates are incorrect');
@@ -42,19 +40,35 @@ export class Vector3D {
       throw new Error('Cannot assign length property');
    }
 
+   #areNumbers = (...variables) => {
+      return variables.every(variable => typeof variable === 'number');
+   };
+   #someSpecified = (...variables) => {
+      return variables.some(
+         variable => typeof variable !== 'undefined' && variable !== null
+      );
+   };
+   #isVector = variable => {
+      return variable instanceof Vector3D;
+   };
+
+   toString = () => {
+      return `vector(${this.#coords.join(', ')})`;
+   };
+
    copy = () => {
       return new Vector3D(...this.#coords);
    };
 
    add = vector => {
-      if (!areVectors(vector)) {
+      if (!this.#isVector(vector)) {
          throw new Error('Argument must be a Vector3D instance');
       }
       this.#coords = this.#coords.map((c, index) => c + vector.coords[index]);
       return this;
    };
    subtract = vector => {
-      if (!areVectors(vector)) {
+      if (!this.#isVector(vector)) {
          throw new Error('Argument must be a Vector3D instance');
       }
       this.#coords = this.#coords.map((c, index) => c - vector.coords[index]);
@@ -62,7 +76,7 @@ export class Vector3D {
    };
 
    times = alpha => {
-      if (!areNumbers(alpha)) {
+      if (!this.#areNumbers(alpha)) {
          throw new Error('Argument must be a number');
       }
       this.#coords = this.#coords.map(c => c * alpha);
@@ -70,7 +84,7 @@ export class Vector3D {
    };
 
    isEqual = vector => {
-      if (!areVectors(vector)) {
+      if (!this.#isVector(vector)) {
          throw new Error('Argument must be a Vector3D instance');
       }
       return this.#coords.every((coord, index) => coord === vector.coords[index]);
@@ -82,9 +96,30 @@ export class Vector3D {
    };
 
    scalarMultiplyBy = vector => {
-      if (!areVectors(vector)) {
+      if (!this.#isVector(vector)) {
          throw new Error('Argument must be a Vector3D instance');
       }
       return this.#coords.reduce((accum, c, index) => accum + c * vector.coords[index]);
+   };
+
+   setComponents = ({ x, y, z }) => {
+      if (this.#areNumbers(x)) {
+         this.#coords[0] = x;
+      }
+      if (this.#areNumbers(y)) {
+         this.#coords[1] = y;
+      }
+      if (this.#areNumbers(z)) {
+         this.#coords[2] = z;
+      }
+      return this;
+   };
+
+   set = vector => {
+      if (!this.#isVector(vector)) {
+         throw new Error('Argument must be a Vector3D instance');
+      }
+      this.#coords = [...vector.coords];
+      return this;
    };
 }

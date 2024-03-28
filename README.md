@@ -16,6 +16,9 @@ This vector class implements vectors and operations on them in three-dimensional
 -  `isEqual(vector: Vector3D): boolean` - checks if `vector` equals original vector
 -  `normalize(): Vector3D` - normalizes original vector
 -  `scalarMultiplyBy(vector: Vector3D): number` - dot product of vectors
+-  `set(vector: Vector3D): Vector3D` - sets coords of `vector` to the original vector
+-  `setComponents({ x, y, z }: { x: number | undefined, y: number | undefined, z: number | undefined }): Vector3D` - sets coords of the vector individually
+-  `toString(): string` - return string like `vector(x, y, z)`
 
 ## Properties
 
